@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformacja Polski 1989 - Baza Wiedzy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Zmieniono czcionkę na "New Courier" */
+            background-color: #1a202c; /* Głębokie ciemne tło */
+            color: #e2e8f0; /* Jasny tekst */
+            transition: background-color 0.3s, color 0.3s;
+            /* Subtelna tekstura tła */
+            background-image: linear-gradient(rgba(255,255,255,.02) 2px, transparent 2px),
+                              linear-gradient(90deg, rgba(255,255,255,.02) 2px, transparent 2px);
+            background-size: 40px 40px;
+        }
+        .section-header {
+            scroll-margin-top: 80px; /* Dostosowanie do stałego nagłówka/nawigacji, jeśli istnieje */
+        }
+        .quiz-option {
+            background-color: #4a5568; /* Ciemnoszary dla opcji quizu */
+            color: #e2e8f0;
+        }
+        .quiz-option:hover {
+            background-color: #616e7f; /* Nieco jaśniejszy ciemnoszary po najechaniu */
+            cursor: pointer;
+        }
+        .quiz-option.selected {
+            background-color: #718096; /* Ciemniejszy szary po wybraniu */
+            border-color: #a0aec0;
+        }
+        .quiz-option.correct {
+            background-color: #68d391; /* Zielony dla poprawnej odpowiedzi */
+            color: white;
+        }
+        .quiz-option.incorrect {
+            background-color: #fc8181; /* Czerwony dla błędnej odpowiedzi */
+            color: white;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 25px;
+            border-left: 3px solid #90cdf4; /* Jaśniejsza niebieska linia w trybie ciemnym */
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #63b3ed;
+            border: 3px solid #a0aec0;
+        }
+        .timeline-date {
+            font-weight: bold;
+            color: #90cdf4; /* Jaśniejszy niebieski dla dat w trybie ciemnym */
+        }
+        .section-box {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        /* Wariacje dla sekcji */
+        #table-of-contents, #quiz-section {
+            background-color: #2d3748; /* Standardowa ciemna sekcja */
+        }
+        #introduction, #church-role {
+            background-color: #2c3340; /* Nieco ciemniejszy niebiesko-szary */
+        }
+        #roundtable-talks, #continuity-rupture {
+            background-color: #312e40; /* Ciemny purpurowo-szary */
+        }
+        #june-elections, #balcerowicz-plan {
+            background-color: #2b3a3d; /* Ciemny turkusowo-szary */
+        }
+        #lech-walesa, #third-republic-birth {
+            background-color: #2e3e4a; /* Średnio ciemny niebiesko-szary */
+        }
+        #timeline, #horizontal-timeline-section, #conclusions-timeline-section {
+            background-color: #2a353c; /* Spójny dla wszystkich osi czasu */
+        }
+
+        /* Niestandardowy pasek przewijania */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #718096;
+            border-radius: 4px;
+        }
+        #scroll-to-top-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99;
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 12px 17px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        #scroll-to-top-btn:hover {
+            background-color: #2b6cb0;
+            transform: scale(1.1);
+        }
+        .colorful-heading {
+            background: linear-gradient(to right, #6366f1, #a855f7); /* Gradient purpurowo-niebieski */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.25rem; /* tekst-4xl */
+            font-weight: 800; /* font-extrabold */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .explanation {
+            font-size: 0.9rem;
+            color: #fca5a5; /* Jaśniejszy czerwony dla błędnego wyjaśnienia w trybie ciemnym */
+            margin-top: 5px;
+            font-style: italic;
+        }
+        /* Styl sekcji rozwijanych */
+        details {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem; /* Dostosowanie paddingu dla bardziej zwartego wyglądu */
+            border-radius: 0.5rem;
+            background-color: #2d3748; /* Ciemniejsze tło dla zwiniętych sekcji, takie samo jak section-box dla spójności */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        details.nested {
+            background-color: #3b455b; /* Nieco jaśniejszy dla zagnieżdżonych detali */
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #a0aec0; /* Jaśniejszy tekst dla podsumowania w trybie ciemnym */
+            display: flex;
+            align-items: center;
+            list-style: none; /* Ukryj domyślną strzałkę */
+            padding: 0.5rem 0; /* Dodaj pionowy padding do podsumowania */
+        }
+
+        summary::-webkit-details-marker {
+            display: none; /* Ukryj domyślny znacznik w przeglądarkach WebKit */
+        }
+
+        summary:hover {
+            color: #e2e8f0; /* Jeszcze jaśniejszy po najechaniu */
+        }
+
+        summary .fas {
+            transition: transform 0.2s;
+            margin-right: 0.5rem; /* Odstęp między ikoną a tekstem */
+        }
+
+        details[open] summary .fa-plus-circle {
+            transform: rotate(45deg); /* Obróć ikonę plusa do X, gdy jest otwarta */
+        }
+        details:not([open]) summary .fa-plus-circle {
+            transform: rotate(0deg); /* Zresetuj obrót, gdy jest zamknięta */
+        }
+        details[open] summary .fa-chevron-right {
+            transform: rotate(90deg); /* Obróć ikonę szewronu, gdy jest otwarta */
+        }
+        details:not([open]) summary .fa-chevron-right {
+            transform: rotate(0deg); /* Zresetuj obrót, gdy jest zamknięta */
+        }
+
+        .details-content {
+            padding-top: 0.5rem; /* Padding dla zawartości wewnątrz detali */
+        }
+
+        .details-content ul {
+            margin-top: 0.5rem;
+        }
+
+        .section-box a {
+            color: #90cdf4; /* Jaśniejszy niebieski dla linków w trybie ciemnym */
+        }
+        .section-box a:hover {
+            color: #63b3ed; /* Jeszcze jaśniejszy niebieski po najechaniu */
+        }
+
+        /* Style specyficzne dla poziomej osi czasu */
+        .horizontal-timeline-container {
+            display: flex;
+            overflow-x: auto; /* Włącz przewijanie poziome */
+            padding-bottom: 1rem; /* Miejsce na pasek przewijania */
+            -webkit-overflow-scrolling: touch; /* Płynne przewijanie na iOS */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #718096 #2d3748; /* Kciuk i ścieżka przewijania Firefox */
+        }
+
+        .horizontal-timeline-item {
+            flex: 0 0 250px; /* Stała szerokość dla każdego elementu */
+            height: 180px; /* Stała wysokość dla spójnego rozmiaru karty */
+            margin-right: 1.5rem;
+            position: relative;
+            perspective: 1000px; /* Dla efektu 3D */
+            background: transparent; /* Tło będzie na wewnętrznych kartach */
+            border-radius: 0.5rem; /* Zaokrąglone rogi dla głównego elementu */
+            transition: transform 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .horizontal-timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .horizontal-timeline-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s; /* Płynna animacja odwracania */
+            transform-style: preserve-3d; /* Ważne dla rotacji 3D */
+        }
+
+        .horizontal-timeline-item:hover .horizontal-timeline-card-inner {
+            transform: rotateY(180deg); /* Odwraca wewnętrzną kartę po najechaniu */
+        }
+
+        .horizontal-timeline-front,
+        .horizontal-timeline-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Ukrywa tył obracającego się elementu, gdy jest odwrócony */
+            border-radius: 0.5rem; /* Zaokrąglone rogi dla kart */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Wyśrodkuj zawartość pionowo */
+            align-items: center; /* Wyśrodkuj zawartość poziomo */
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Cień na samych kartach */
+        }
+
+        .horizontal-timeline-front {
+            background-color: #3b455b; /* Kolor przedniej strony */
+            z-index: 2;
+        }
+
+        .horizontal-timeline-back {
+            background-color: #2a4365; /* Ciemniejszy niebiesko-szary dla tylnej strony */
+            transform: rotateY(180deg); /* Początkowo odwrócone, aby ukryć */
+            z-index: 1;
+            justify-content: flex-start; /* Wyśrodkuj zawartość na tylnej stronie do góry */
+            align-items: flex-start; /* Wyrównaj tekst do lewej */
+        }
+
+        .horizontal-timeline-date {
+            font-weight: bold;
+            color: #90cdf4;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            text-align: center; /* Wyśrodkuj datę */
+            width: 100%;
+        }
+
+        .horizontal-timeline-description {
+            color: #cbd5e0;
+            font-size: 0.875rem;
+            text-align: center; /* Wyśrodkuj opis */
+            width: 100%;
+        }
+
+        .horizontal-timeline-significance {
+            color: #a0aec0;
+            font-size: 0.75rem;
+            font-style: italic;
+            text-align: left; /* Wyrównaj znaczenie do lewej */
+            width: 100%;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1); /* Delikatna linia oddzielająca */
+            margin-top: auto; /* Wypchnij na dół elementu */
+        }
+
+        /* Nowe style osi czasu wniosków - podobne do pionowych, ale z wyróżniającą się zawartością */
+        .conclusions-timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 25px;
+            border-left: 3px solid #fbd38d; /* Pomarańczowa linia dla wyróżnienia */
+        }
+        .conclusions-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #f6ad55; /* Ciemniejsza pomarańczowa kropka */
+            border: 3px solid #dd6b20;
+        }
+        .conclusions-timeline-date {
+            font-weight: bold;
+            color: #fbd38d; /* Pomarańczowy dla dat */
+        }
+        .conclusions-timeline-conclusion {
+            color: #cbd5e0; /* Jasnoszary dla tekstu wniosku */
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* Style dla obrazków */
+        .content-image {
+            display: block;
+            margin: 1.5rem auto; /* Wyśrodkuj i dodaj margines */
+            max-width: 80%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+        }
+        .content-image:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="dark-mode"> <!-- Ustawienie trybu ciemnego na stałe -->
+    <div class="min-h-screen flex flex-col items-center p-4">
+        <header class="w-full max-w-4xl bg-gray-800 shadow-lg rounded-xl p-4 mb-6 sticky top-4 z-50 flex justify-between items-center transform transition-transform duration-300 hover:scale-[1.01]">
+            <h1 class="text-2xl font-bold text-white">Transformacja Polski 1989 🇵🇱</h1>
+            <!-- Usunięto przycisk przełączania motywu -->
+        </header>
+
+        <main class="w-full max-w-4xl">
+            <!-- Spis Treści -->
+            <section id="table-of-contents" class="section-box mb-8 p-6">
+                <h2 class="text-2xl font-bold mb-4 text-blue-300"><i class="fas fa-list-ul mr-2"></i> Spis Treści</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-blue-400 cursor-pointer flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Rozwiń/Zwiń spis treści
+                    </summary>
+                    <div class="details-content">
+                        <ul class="space-y-2 text-gray-200 list-disc list-inside">
+                            <li><a href="#introduction" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-bookmark mr-2"></i> Wprowadzenie: Kamień Milowy!</a></li>
+                            <li><a href="#roundtable-talks" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-handshake mr-2"></i> Okrągły Stół (1989): Negocjacje Pełne Niespodzianek</a></li>
+                            <li><a href="#june-elections" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-vote-yea mr-2"></i> Wybory Czerwcowe 1989: Katastrofa dla Starych, Triumf dla Nowych!</a></li>
+                            <li><a href="#lech-walesa" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-user-tie mr-2"></i> Lech Wałęsa: Od Bohatera do Kontrowersyjnego Prezydenta</a></li>
+                            <li><a href="#balcerowicz-plan" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-chart-line mr-2"></i> Plan Balcerowicza (1989): Terapia Szokowa z Długimi Konsekwencjami</a></li>
+                            <li><a href="#church-role" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-church mr-2"></i> Kościół Katolicki: Siła Moralna i Polityczna</a></li>
+                            <li><a href="#third-republic-birth" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-flag mr-2"></i> Narodziny III RP: Szybkie Zmiany i Wojny o Pamięć</a></li>
+                            <li><a href="#continuity-rupture" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-exchange-alt mr-2"></i> III RP: Ciągłość czy Zerwanie z Przeszłością?</a></li>
+                            <li><a href="#timeline" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-history mr-2"></i> Oś Czasu: Najważniejsze Daty (Pionowa)</a></li>
+                            <li><a href="#horizontal-timeline-section" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-arrows-alt-h mr-2"></i> Oś Czasu: Najważniejsze Daty (Pozioma)</a></li>
+                            <li><a href="#conclusions-timeline-section" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-lightbulb mr-2"></i> Kluczowe Przełomy i Ich Skutki</a></li>
+                            <li><a href="#quiz-section" class="text-blue-400 hover:text-blue-200 transition-colors"><i class="fas fa-question-circle mr-2"></i> Sprawdź swoją wiedzę! (Quiz)</a></li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Wprowadzenie -->
+            <section id="introduction" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-bookmark mr-2"></i> I. Wprowadzenie: Kamień Milowy!</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Zobacz wprowadzenie
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <p class="text-gray-200 mb-4">✨ <strong>Rok 1989</strong> to punkt zwrotny dla <strong>Polski</strong> i całej <strong>Europy Środkowo-Wschodniej</strong>.</p>
+                        <p class="text-gray-200 mb-4">Transformacja z <strong>komunistycznego systemu</strong> i <strong>gospodarki centralnie planowanej</strong> na <strong>demokratyczne państwo</strong> z <strong>rynkową ekonomią</strong> była niczym <strong>przejście z ciemności do światła</strong> 🌅.</p>
+                        <p class="text-gray-200">Polska była wyjątkowa – nasza zmiana miała <strong>negocjowany charakter</strong> 🤝, zapoczątkowany przez słynne <strong>Obrady Okrągłego Stołu</strong>.</p>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Okrągły Stół (1989) -->
+            <section id="roundtable-talks" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-handshake mr-2"></i> II. Okrągły Stół (1989): Negocjacje Pełne Niespodzianek</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Tło: Kocioł w PRL-u i Wiatr ze Wschodu
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Kryzys w PRL-u:</strong> 📉 Lata 80. to <strong>totalna zapaść gospodarcza</strong> (brak wszystkiego!). Rząd musiał coś zrobić, żeby <strong>uniknąć buntu</strong> 😠.</li>
+                            <li><strong>Fala strajków w 1988:</strong> To było dla władzy <strong>"ostatnie ostrzeżenie przed katastrofą"</strong> 🚨.</li>
+                            <li><strong>Gorbaczow i "nowa polityka":</strong> 🕊️ W ZSRR skończyła się <strong>"doktryna Breżniewa"</strong> (czyli: ZSRR nie będzie już wtrącać się militarnie!). To otworzyło <strong>"okno możliwości"</strong> 🚪 dla Polski.</li>
+                            <li><strong>Kościół Katolicki:</strong> ⛪ Niezwylke ważny! Był <strong>zaufanym mediatorem</strong>, który budował <strong>zaufanie</strong> między zwaśnionymi stronami.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Uczestnicy: Zderzenie Światów
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Po jednej stronie: <strong>Rząd Komunistyczny</strong> (PRL) – w desperacji.</li>
+                            <li>Po drugiej: <strong>Nielegalna opozycja "Solidarność"</strong> ✊ – z Lechem Wałęsą na czele.</li>
+                            <li><strong>Kluczowe postaci:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Zobacz listę postaci
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>"Solidarność":</strong> <strong>Lech Wałęsa</strong>, Bronisław Geremek, Tadeusz Mazowiecki, Adam Michnik, Jacek Kuroń.</li>
+                                            <li><strong>Rząd:</strong> Czesław Kiszczak, Mieczysław Rakowski.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Magdalenka:</strong> To tam, jesienią <strong>1988</strong>, potajemnie ustalono ramy negocjacji 🤫. Rząd myślał, że <strong>kontrolował sytuację</strong>, ale... niedoszacował siły opozycji!</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Główne Ustalenia: "Kompromis", który Zaskoczył Wszystkich
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Start:</strong> Obrady rozpoczęły się <strong>6 lutego 1989</strong> 📅.</li>
+                            <li><strong>Podpisano:</strong> Porozumienia gotowe były <strong>5 kwietnia 1989</strong> ✅.</li>
+                            <li><strong>Plan PZPR:</strong> Partia miała utrzymać kontrolę, gwarantując sobie <strong>65% miejsc w Sejmie</strong> (parlamencie). Nowy urząd prezydenta miał objąć gen. <strong>Wojciech Jaruzelski</strong>.</li>
+                            <li><strong>Koncesje dla "Solidarności":</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Koncesje Solidarności
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>Ponowna legalizacja "Solidarności"!</strong> 🎉</li>
+                                            <li><strong>Częściowo wolne wybory</strong> na pozostałe <strong>35% miejsc w Sejmie</strong>.</li>
+                                            <li><strong>CAŁKOWICIE WOLNE WYBORY</strong> do nowo utworzonego <strong>Senatu</strong> (izby wyższej parlamentu) 🤩.</li>
+                                            <li>Obietnica: <strong>w pełni wolne wybory za 4 lata</strong>.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Nieoczekiwany Efekt:</strong> Ten "kompromis" dla PZPR był niczym <strong>nieświadome zapoczątkowanie szybkiego rozpadu reżimu komunistycznego</strong> 💥. Wolne wybory do Senatu okazały się <strong>krytyczną słabością</strong> władzy!</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Wybory Czerwcowe 1989 -->
+            <section id="june-elections" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-vote-yea mr-2"></i> III. Wybory Czerwcowe 1989: Katastrofa dla Starych, Triumf dla Nowych!</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Kampania: Innowacja vs. Nuda
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>To były <strong>pierwsze sporne wybory w Polsce od ponad 40 lat!</strong> 🤯</li>
+                            <li><strong>"Solidarność":</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Działania Solidarności
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li>Mogła prowadzić kampanię <strong>swobodniej</strong> niż kiedykolwiek.</li>
+                                            <li>Uruchomiła <strong>"Gazetę Wyborczą"</strong> 📰 i wznowiła <strong>"Tygodnik Solidarność"</strong>.</li>
+                                            <li>Wymyśliła <strong>"mit drużyny Wałęsy"</strong> – zdjęcie każdego kandydata z Lechem Wałęsą 📸, co tworzyło jednolity wizerunek.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>PZPR:</strong> Prowadziła kampanię <strong>"źle przeprowadzoną"</strong> i <strong>"anemiczną i idiotyczną"</strong> 🤦‍♂️.</li>
+                            <li><strong>Wniosek:</strong> Jakość, jedność i mobilizacja Solidarności okazały się <strong>znacznie potężniejsze</strong> niż przestarzała propaganda komunistów, mimo że "Solidarność" miała <strong>ograniczony dostęp do mediów</strong>!</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Wyniki: Totalny Szok!
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Pierwsza tura (4 czerwca 1989):</strong> Frekwencja 62,7%.</li>
+                            <li><strong>Wynik:</strong> <strong>"Zupełna klęska obozu rządzącego!"</strong> 😱 Komitet Obywatelski "Solidarność" zdobył:
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Szczegóły wyników
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>160 ze 161</strong> możliwych miejsc w Sejmie.</li>
+                                            <li><strong>92 ze 100</strong> miejsc w Senacie! 🤩</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li>Tylko 2 kandydatów PZPR z listy krajowej uzyskało poparcie!</li>
+                            <li><strong>Absolutny Ewenement:</strong> Władze <strong>musiały zmienić ordynację wyborczą MIĘDZY TURAMI</strong>, żeby w ogóle mogli obsadzić resztę miejsc! 😲</li>
+                            <li>Reżim <strong>błędnie ocenił</strong> swoje poparcie społeczne – to był ich <strong>fatalny błąd strategiczny</strong>!</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Zmiany Po Wyborach: Turbo-Transformacja!
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Wzrost wpływu opozycji:</strong> Natychmiastowy!</li>
+                            <li><strong>Prezydent Jaruzelski:</strong> Wybrany <strong>jednym głosem</strong> 🤏 – to symbol jego słabości.</li>
+                            <li><strong>Tadeusz Mazowiecki Premierem (24 sierpnia 1989):</strong> 🎉 <strong>Pierwszy NIEKOMUNISTYCZNY PREMIER w całym Bloku Wschodnim!</strong></li>
+                            <li><strong>Szybkie Zmiany Konstytucyjne (grudzień 1989):</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Zmiany Konstytucyjne
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li>Nazwa państwa: z Polskiej Rzeczypospolitej Ludowej na <strong>RZECZPOSPOLITĄ POLSKĄ</strong> 🇵🇱.</li>
+                                            <li>Wrócił <strong>koronowany biały orzeł</strong> jako godło narodowe! 👑</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Rozwiązanie PZPR (styczeń 1990):</strong> 🥳 Koniec!</li>
+                            <li><strong>Plan Balcerowicza:</strong> Nowy rząd zaczął wdrażać trudne <strong>reformy gospodarcze</strong> 💰.</li>
+                            <li><strong>Wybory Samorządowe (wiosna 1990):</strong> Pierwsze <strong>wolne</strong> wybory lokalne.</li>
+                            <li><strong>Lech Wałęsa Prezydentem (jesień 1990):</strong> Wybrany w bezpośrednich wyborach powszechnych.</li>
+                            <li><strong>Sondaże:</strong> Polacy <strong>pozytywnie</strong> oceniali fakt transformacji ✅, ale sposób jej przeprowadzenia wywoływał <strong>spolaryzowane debaty</strong> 🗣️.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Lech Wałęsa -->
+            <section id="lech-walesa" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-user-tie mr-2"></i> IV. Lech Wałęsa: Od Bohatera do Kontrowersyjnego Prezydenta</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Jego Kluczowa Rola w "Solidarności": Ikona Oporu
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Elektryk ze Stoczni Gdańskiej</strong> ⚡. W <strong>1980</strong> został przewodniczącym <strong>"Solidarności"</strong> – pierwszej <strong>niezależnej organizacji związkowej</strong>!</li>
+                            <li>Legendarny moment: Wszedł na <strong>bramę Stoczni Gdańskiej</strong> w 1980, by przemówić do strajkujących robotników 🚪.</li>
+                            <li>Skutecznie zmobilizował <strong>wielomilionowy ruch antykomunistyczny</strong> – coś <strong>unikalnego</strong> w Europie Wschodniej! 🤯</li>
+                            <li>Nauczył się na błędach: Zamiast przemocy, postawił na <strong>"odwagę, ale także taktykę"</strong> ☮️.</li>
+                            <li>Wspierali go <strong>intelektualiści</strong> (Geremek, Mazowiecki).</li>
+                            <li><strong>Pokojowa Nagroda Nobla (1983):</strong> Wzmacniła jego <strong>międzynarodową reputację</strong> 🌍 i dała Polakom <strong>nadzieję</strong> ✨.</li>
+                            <li>Mistrzowsko wykorzystywał <strong>zachodnie media</strong>, by "Solidarność" była na ustach świata, nawet w stanie wojennym.</li>
+                            <li>Jego charyzma, intuicja i zdolność adaptacji były <strong>kluczowe</strong> dla sukcesu "Solidarności"! 💡</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Wyzwania Prezydentury (1990-1995): Inny Rodzaj Gry
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Wybrany Prezydentem w <strong>grudniu 1990</strong> – pierwszy niekomunistyczny szef państwa w Bloku Sowieckim!</li>
+                            <li>Jego prezydentura to często <strong>"brak wizji, złe decyzje i stracone szanse"</strong> 😔.</li>
+                            <li><strong>Kontynuował styl konfrontacji</strong> z czasów opozycji – nie rozumiał potrzeby <strong>politycznych negocjacji i kompromisu</strong> ❌.</li>
+                            <li><strong>"Wojna na górze":</strong> Rozpoczęła formalny <strong>podział "Solidarności"</strong> 💔.</li>
+                            <li><strong>Izolował się</strong>, otaczał uległymi doradcami.</li>
+                            <li>Działania takie jak <strong>rozwiązanie parlamentu w 1993</strong> czy wymuszanie rezygnacji premierów były postrzegane jako <strong>hamowanie pracy instytucji demokratycznych</strong> 🛑.</li>
+                            <li>Mocno popierał <strong>zwiększoną rolę Kościoła</strong> (obowiązkowa religia, restrykcyjne prawo aborcyjne) – to spowodowało <strong>utratę części poparcia społecznego</strong>.</li>
+                            <li>Nieznacznie przegrał reelekcję w <strong>1995</strong> z <strong>Aleksandrem Kwaśniewskim</strong> (byłym komunistą!).</li>
+                            <li><strong>Wniosek:</strong> Cechy, które czyniły go <strong>skutecznym liderem rewolucyjnym</strong>, okazały się <strong>przeszkodami w demokracji parlamentarnej</strong> ⚖️.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Trwały Wpływ: Spuścizna i Kontrowersje
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Niezaprzeczalnie <strong>kluczowy</strong> w wprowadzeniu <strong>pierwszych wolnych wyborów</strong> w Polsce.</li>
+                            <li>Pozostaje <strong>symbolem pokojowej rewolucji</strong> i <strong>"powrotu Polski do Europy"</strong> 🇪🇺.</li>
+                            <li>Poparł <strong>"terapię szokową"</strong> gospodarki i <strong>przystąpienie Polski do NATO i UE</strong>.</li>
+                            <li>Wykazał się <strong>"kompasem moralnym"</strong>, przepraszając żydowskich kolegów i przemawiając w Knesecie (1991).</li>
+                            <li>Ale: Jego <strong>dziedzictwo jest MOCNO SPORNE</strong> w Polsce 🗣️, co odzwierciedla trwające <strong>"wojny o historię"</strong> i podziały społeczne.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Plan Balcerowicza (1989) -->
+            <section id="balcerowicz-plan" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-chart-line mr-2"></i> V. Plan Balcerowicza (1989): Terapia Szokowa z Długimi Konsekwencjami</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Cele i Mechanizmy: Szybkie Przejście na Kapitalizm
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>"Terapia Szokowa"</strong> ⚡: Radykalna strategia szybkiego przejścia z <strong>gospodarki państwowej, centralnie planowanej</strong>, do <strong>kapitalistycznej gospodarki rynkowej</strong>.</li>
+                            <li><strong>Główny cel:</strong> Polska miała szybko wrócić do <strong>"głównego nurtu Europy Zachodniej"</strong> i stać się "normalnym" krajem 🇪🇺.</li>
+                            <li><strong>Konkretne cele:</strong> Równowaga budżetowa, znaczne zmniejszenie <strong>inflacji</strong> (☠️ hiperinflacji!), eliminacja <strong>niedoborów</strong> (puste półki! 🛒), zwiększenie rezerw walutowych, stabilizacja kursu złotego.</li>
+                            <li><strong>Kluczowe mechanizmy (wprowadzone 1 stycznia 1990):</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Kluczowe mechanizmy
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>Liberalizacja cen:</strong> Ceny "uwolnione" – <strong>natychmiastowy, znaczący wzrost cen!</strong> ⬆️ (Miało to wchłonąć nadmierny popyt).</li>
+                                            <li><strong>Kontrola płac ("popiwek"):</strong> Podatek od nadmiernego wzrostu płac w firmach państwowych (żeby hamować inflację).</li>
+                                            <li><strong>Dyscyplina fiskalna:</strong> Drastyczne <strong>cięcie dotacji</strong> dla firm państwowych i towarów ✂️.</li>
+                                            <li><strong>Wymienialność waluty:</strong> Złoty stał się wewnętrznie wymienialny po stałym kursie wobec dolara 💵.</li>
+                                            <li><strong>Polityka monetarna:</strong> Podniesienie stóp procentowych (kontrola inflacji, zachęta do oszczędzania).</li>
+                                            <li><strong>Prywatyzacja:</strong> <strong>Masowe sprzedaże</strong> państwowych firm! 🏭➡️🏢</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Filozofia:</strong> Zasadniczo: firmy państwowe i pracownicy byli "nieefektywni", a "niepewność napędzałaby produktywność" 🤷‍♀️.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Krótkoterminowe Efekty: Ból i Sukces
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Cena społeczna:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Cena społeczna
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>"3-letni spadek produkcji"</strong>: PKB spadł o <strong>8% w 1990</strong> i <strong>7% w 1991</strong> 📉.</li>
+                                            <li><strong>Bezrobocie:</strong> Wcześniej nieistniejące, teraz rosło! Aż <strong>16,4% (2,9 mln ludzi) do 1993</strong> 😥.</li>
+                                            <li><strong>Płace realne:</strong> Spadły o <strong>ponad 40% w ciągu pierwszych dwóch miesięcy!</strong> 😭</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Sukcesy:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Sukcesy planu
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>Hiperinflacja zredukowana:</strong> Z ponad 50% miesięcznie do ok. <strong>4% do połowy 1990!</strong> ✅</li>
+                                            <li><strong>Nadwyżka budżetowa w 1990.</strong></li>
+                                            <li><strong>Niedobory rynkowe wyeliminowane:</strong> Sklepy <strong>"pełne po raz pierwszy od dziesięcioleci"</strong>! 🍎🍞🛒</li>
+                                            <li><strong>Gwałtowny rozwój nowych prywatnych przedsiębiorstw</strong> 🚀.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Paradoks:</strong> Plan osiągnął cele makroekonomiczne, ale kosztem <strong>poważnych trudności społecznych</strong>. Stworzyło to <strong>niezadowolenie publiczne</strong>! 🤔</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Długoterminowe Efekty: Wzrost, Nierówności, Debaty
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Od <strong>1992</strong> gospodarka weszła w fazę <strong>systematycznego wzrostu</strong> 📈. Polska stała się <strong>liderem transformacji postkomunistycznych</strong>!</li>
+                            <li><strong>Prywatyzacja</strong> była kluczowym motorem wzrostu.</li>
+                            <li><strong>Ciemna strona:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Ciemna strona planu
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>Stratyfikacja społeczna</strong> i rosnące <strong>nierówności ekonomiczne</strong> – "nowa bieda" obok "starej biedoty" 😔.</li>
+                                            <li><strong>Bezrobocie dwucyfrowe</strong> przez cały okres transformacji (nawet <strong>20% w 2003</strong>).</li>
+                                            <li><strong>Krytyka:</strong> "Masowy upadek dużych fabryk", "drenaż mózgów" (młodzi wyjeżdżali 🧠✈️), niskie płace ("pracujący biedni").</li>
+                                            <li><strong>"Ubodzenie sfery budżetowej"</strong> (szczególnie opieki zdrowotnej 🏥 i edukacji 🏫).</li>
+                                            <li>Podejrzenia o <strong>"wrogie przejęcia"</strong> polskich firm przez kapitał zagraniczny 😠.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Wniosek:</strong> Plan Balcerowicza przyniósł wzrost i integrację z Zachodem, ale z <strong>wysokimi kosztami społecznymi</strong> i <strong>spornym modelem kapitalizmu</strong>, co <strong>podsycilo niezadowolenie</strong> i przyszłe nastroje populistyczne. 🧐</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Kościół Katolicki -->
+            <section id="church-role" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-church mr-2"></i> VI. Trwała Rola Kościoła Katolickiego w Transformacji Polski</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Moralne i Organizacyjne Wsparcie dla Opozycji: Ostoją Narodu
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Przed 1989: Kościół = <strong>polska tożsamość, wolność, obrona praw człowieka</strong> 🇵🇱. Był <strong>"ostatnią legalną siłą sprzeciwiającą się"</strong> reżimowi komunistycznemu 💪.</li>
+                            <li><strong>Autorytet wzrósł niesamowicie</strong> po wyborze <strong>Karola Wojtyły na Papieża Jana Pawła II (1978)</strong> 🌟 i jego pielgrzymce do Polski w <strong>1979</strong> – dla wielu to <strong>"początek końca" komunizmu</strong>!</li>
+                            <li>Wizyty papieża <strong>zjednoczyły naród</strong>, budząc ducha współpracy.</li>
+                            <li><strong>Bezpośrednie wsparcie:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Bezpośrednie wsparcie Kościoła
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li>Publiczne ogłoszenia z ambon o spotkaniach "Solidarności" 📣.</li>
+                                            <li>Udostępnianie <strong>pomieszczeń kościelnych</strong> na spotkania i materiały opozycji ⛪.</li>
+                                            <li>Skutecznie naciskał na "Solidarność", by <strong>nie stosowała przemocy</strong> ☮️.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li>W czasach braku społeczeństwa obywatelskiego, Kościół działał jak <strong>równoległe "quasi-państwo"</strong> i potężna <strong>siła jednocząca</strong>.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Wpływ na Debatę Publiczną i Ramy Instytucjonalne: Nowe Wyzwania
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Przedstawiciele Kościoła uczestniczyli w <strong>Obrady Okrągłego Stołu</strong>, co <strong>legitymizowało cały proces</strong> ✅.</li>
+                            <li>Po 1989: Kościół dążył do wypełnienia <strong>"próżni aksjologicznej"</strong> (czyli pustki po komunistycznej ideologii).</li>
+                            <li><strong>Wpływ na prawo:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Wpływ na prawo
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li><strong>Konstytucja 1997:</strong> Włączono odniesienia do <strong>"Boga"</strong> i dziedzictwa chrześcijańskiego w preambule 📜.</li>
+                                            <li><strong>Konkordat (1993 podpisany, 1998 ratyfikowany):</strong> Umocnił <strong>uprzywilejowaną pozycję Kościoła</strong> (dotacje państwowe, autonomia w nauczaniu religii w szkołach).</li>
+                                            <li>Znaczący wpływ na ustawę o <strong>aborcji z 1993</strong> 💔.</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Kontrowersje:</strong> Aktywna <strong>polityzacja Kościoła po 1989 NIE ZAWSZE SPOTKAŁA SIĘ Z POZYTYWNYM POPARCIEM</strong> 📉. Sondaże pokazały <strong>spadek zaufania</strong>, a Polacy często głosowali <strong>przeciwko</strong> kandydatom popieranym przez Kościół 🗳️.</li>
+                            <li><strong>Wniosek:</strong> Przejście od roli jednoczyciela narodu (w walce z komunizmem) do bardziej <strong>dzielącej roli politycznej</strong> w demokracji. 🤔</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Narodziny III Rzeczypospolitej -->
+            <section id="third-republic-birth" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-flag mr-2"></i> VII. Narodziny III Rzeczypospolitej: Szybkie Zmiany i Wojny o Pamięć</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Chronologia Wydarzeń Założycielskich: Błyskawiczny Bieg Historii!
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Luty-kwiecień 1989:</strong> Obrady Okrągłego Stołu.</li>
+                            <li><strong>4 i 18 czerwca 1989:</strong> Pierwsze częściowo wolne wybory parlamentarne (gigantyczne zwycięstwo "Solidarności").</li>
+                            <li><strong>19 lipca 1989:</strong> Gen. Wojciech Jaruzelski wybrany Prezydentem PRL.</li>
+                            <li><strong>24 sierpnia 1989:</strong> <strong>Tadeusz Mazowiecki mianowany Premierem</strong> (pierwszy niekomunistyczny rząd w bloku!).</li>
+                            <li><strong>Grudzień 1989:</strong> <strong>Zmiana konstytucji</strong> – nazwa państwa na <strong>Rzeczpospolitą Polską</strong> 🇵🇱, powrót <strong>koronowanego orła</strong> 👑.</li>
+                            <li><strong>Styczeń 1990:</strong> <strong>Polska Zjednoczona Partia Robotnicza (PZPR) rozwiązuje się</strong> 🥳.</li>
+                            <li><strong>Grudzień 1990:</strong> <strong>Lech Wałęsa wybrany Prezydentem RP</strong> w bezpośrednich wyborach.</li>
+                        </ul>
+                        <p class="text-gray-200 mt-4">To był okres <strong>niezwykle szybkiego i fundamentalnego przekształcenia</strong> Polski – od państwa komunistycznego do <strong>republiki demokratycznej</strong> 🚀. Zmiany symboliczne pokazały <strong>zdecydowane zerwanie</strong> z przeszłością PRL.</p>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Aspekty Społeczno-Kulturowe: Pamięć, Symbole i Konflikty Pokoleń
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>"Dekomunizacja przestrzeni publicznej":</strong> Głębokie odrzucenie dziedzictwa komunistycznego – usuwanie pomników 🚫, zmiana nazw ulic.</li>
+                            <li><strong>Wpływy zachodnie:</strong> Polska kultura masowa szybko uległa silnym wpływom Zachodu 🇺🇸🎶.</li>
+                            <li><strong>Rozpad "Solidarności"</strong> jako szerokiego ruchu społecznego.</li>
+                            <li><strong>"Wojny o historię":</strong> Złożony i sporny krajobraz pamięci. Filmy pokazywały PRL różnie – od opresji do nostalgii (<strong>"moda na PRL"</strong> 🎭).</li>
+                            <li><strong>Zmiany pokoleniowe:</strong> Młodsze pokolenia (wychowane w kapitalizmie) mają <strong>inne poglądy</strong> niż starsze (walczące o demokrację) 🗣️. To doprowadziło do <strong>"ukrytego konfliktu międzypokoleniowego"</strong>.</li>
+                            <li><strong>Wniosek:</strong> Transformacja to nie była jednolita akceptacja, ale <strong>spore i fragmentaryczne kształtowanie pamięci zbiorowej</strong> 🧩.</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- III RP: Ciągłość czy Zerwanie z Przeszłością? -->
+            <section id="continuity-rupture" class="section-box section-header">
+                <h2 class="colorful-heading mb-4"><i class="fas fa-exchange-alt mr-2"></i> VIII. III RP: Ciągłość czy Zerwanie z Przeszłością?</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Podstawy Prawne i Instytucjonalne: Hybrydowe Państwo
+                    </summary>
+                    <div class="details-content">
+                        <!-- Usunięto obrazek zastępczy -->
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li>Narodziny III RP to splot <strong>wyraźnego zerwania</strong> i <strong>znaczącej, ukrytej ciągłości</strong> z PRL ⚖️.</li>
+                            <li><strong>Zerwanie:</strong> Zmiany konstytucyjne (grudzień 1989) <strong>formalnie zakończyły istnienie PRL</strong> i ustanowiły RP 🇵🇱. Konstytucja 1997 <strong>zakazała organizacji totalitarnych</strong> 🚫.</li>
+                            <li><strong>Ciągłość:</strong>
+                                <details class="nested mb-2 details-content">
+                                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                                        <i class="fas fa-chevron-right mr-2 text-blue-400"></i> Ciągłość z PRL
+                                    </summary>
+                                    <div class="details-content">
+                                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2 ml-4">
+                                            <li>Polska przyjęła <strong>"podwójne państwo prawa"</strong> – proklamując zerwanie, ale utrzymując <strong>ciągłość systemu prawnego i instytucjonalnego</strong>.</li>
+                                            <li><strong>Wojsko:</strong> Stosunkowo duża <strong>ciągłość kadrowa</strong> po 1989 👮‍♂️.</li>
+                                            <li><strong>Prawo:</strong> Elementy <strong>"socjalistycznej tradycji prawnej"</strong> przetrwały w postępowaniu cywilnym (np. uprawnienia prokuratora).</li>
+                                        </ul>
+                                    </div>
+                                </details>
+                            </li>
+                            <li><strong>Dekomunizacja i lustracja:</strong> Wysiłki, by zerwać z przeszłością, <strong>napotkały opór</strong> i często były <strong>niepełne lub opóźnione</strong> 🤷‍♀️.</li>
+                            <li><strong>Wniosek:</strong> Polska transformacja to <strong>hybrydowa struktura prawna i instytucjonalna</strong>, która do dziś kształtuje debaty polityczne i prawne.</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Interpretacje w Nauce: Spory o Narrację
+                    </summary>
+                    <div class="details-content">
+                        <ul class="list-disc list-inside text-gray-200 mt-2 space-y-2">
+                            <li><strong>Debata o ciągłości vs. zerwaniu</strong> jest centralna dla badaczy.</li>
+                            <li>Jedni widzą transformację jako <strong>zdecydowane zerwanie</strong> i <strong>"mit założycielski"</strong> III RP (przywrócenie suwerenności, demokracji). 🗽</li>
+                            <li>Inni podkreślają <strong>głębokie ciągłości</strong> – badają <strong>"PRL-owskie re-sentymenty"</strong> (nostalgia!) i stosują <strong>"teorię porozumienia elit"</strong> (kompromisy między istniejącymi elitami -> ciągłość władzy). 🔄</li>
+                            <li><strong>"Wojny o historię"</strong> w Polsce odzwierciedlają szerszą walkę o <strong>pamięć narodową</strong> – różne obozy polityczne promują własne narracje. ⚔️</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Pionowa Oś Czasu -->
+            <section id="timeline" class="section-box section-header p-6">
+                <h2 class="text-2xl font-bold mb-6 text-purple-300"><i class="fas fa-history mr-2"></i> Oś Czasu: Najważniejsze Daty Transformacji Polski (Pionowa)</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Zobacz oś czasu pionową
+                    </summary>
+                    <div class="details-content">
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <p class="timeline-date">Luty-Kwiecień 1989</p>
+                                <p class="text-gray-200"><strong>Obrady Okrągłego Stołu:</strong> Historyczne negocjacje między władzą a opozycją, które otworzyły drogę do zmian. 🤝</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">4 i 18 czerwca 1989</p>
+                                <p class="text-gray-200"><strong>Pierwsze częściowo wolne wybory parlamentarne:</strong> Spektakularne zwycięstwo "Solidarności" pokazuje brak legitymacji PZPR. 💥</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">19 lipca 1989</p>
+                                <p class="text-gray-200"><strong>Wojciech Jaruzelski wybrany Prezydentem PRL:</strong> Ostatnia próba komunistów, by utrzymać kontrolę, choć już osłabioną. 🤏</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">24 sierpnia 1989</p>
+                                <p class="text-gray-200"><strong>Tadeusz Mazowiecki mianowany Premierem:</strong> Powstaje pierwszy niekomunistyczny rząd w Europie Środkowo-Wschodniej. 🎉</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">Grudzień 1989</p>
+                                <p class="text-gray-200"><strong>Zmiany w Konstytucji PRL:</strong> Państwo zmienia nazwę na Rzeczpospolitą Polską, wraca koronowany orzeł. 🇵🇱👑</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">1 stycznia 1990</p>
+                                <p class="text-gray-200"><strong>Wdrożenie Planu Balcerowicza:</strong> Rozpoczęcie radykalnych reform gospodarczych – "terapii szokowej". ⚡💰</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">Styczeń 1990</p>
+                                <p class="text-gray-200"><strong>Rozwiązanie PZPR:</strong> Formalny koniec dominacji partii komunistycznej w Polsce. 🥳</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">Wiosna 1990</p>
+                                <p class="text-gray-200"><strong>Wolne wybory samorządowe:</strong> Pierwsze w pełni wolne wybory na szczeblu lokalnym. 🗳️</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">Grudzień 1990</p>
+                                <p class="text-gray-200"><strong>Lech Wałęsa wybrany Prezydentem RP:</strong> Pierwsze bezpośrednie, powszechne wybory prezydenckie. 👨‍⚖️</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">Październik 1991</p>
+                                <p class="text-gray-200"><strong>Pierwsze w pełni wolne wybory parlamentarne:</strong> Po raz pierwszy od II wojny światowej Polacy wybierają cały parlament. ✅</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">1992</p>
+                                <p class="text-gray-200"><strong>Początek systematycznego wzrostu gospodarczego:</strong> Polska gospodarka wchodzi w fazę trwałego wzrostu. 📈</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">1993</p>
+                                <p class="text-gray-200"><strong>Ustawa o aborcji:</strong> Kościół katolicki znacząco wpływa na kształt prawa aborcyjnego, co budzi kontrowersje. 💔</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">1993 (podpisanie), 1998 (ratyfikacja)</p>
+                                <p class="text-gray-200"><strong>Konkordat:</strong> Umocnienie uprzywileylizowanej pozycji Kościoła katolickiego w Polsce, określający relacje państwo-kościół. ⛪✍️</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">1995</p>
+                                <p class="text-gray-200"><strong>Lech Wałęsa przegrywa reelekcję:</strong> Prezydentem zostaje Aleksander Kwaśniewski, co symbolizuje zmianę w polskiej polityce. 🗳️</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="timeline-date">1997</p>
+                                <p class="text-gray-200"><strong>Nowa Konstytucja RP:</strong> Najważniejszy akt prawny, w którym pojawiają się odniesienia do "Boga" i dziedziedzictwa chrześcijańskiego. 📜</p>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Pozioma Oś Czasu -->
+            <section id="horizontal-timeline-section" class="section-box section-header p-6">
+                <h2 class="text-2xl font-bold mb-6 text-purple-300"><i class="fas fa-arrows-alt-h mr-2"></i> Oś Czasu: Najważniejsze Daty Transformacji Polski (Pozioma)</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Zobacz oś czasu poziomą
+                    </summary>
+                    <div class="details-content">
+                        <div class="horizontal-timeline-container">
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Luty-Kwiecień 1989</p>
+                                        <p class="horizontal-timeline-description">Obrady Okrągłego Stołu</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Umożliwiły pokojowe przekazanie władzy, unikając rozlewu krwi. Były fundamentem pod wolne wybory, które nastąpiły zaraz potem.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Czerwiec 1989</p>
+                                        <p class="horizontal-timeline-description">Wybory parlamentarne</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Pokazały ogromne poparcie dla "Solidarności" i brak legitymacji dla władzy komunistycznej, przyspieszając jej upadek.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Lipiec 1989</p>
+                                        <p class="horizontal-timeline-description">Jaruzelski Prezydentem</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Symbolizowało to próbę zachowania resztek kontroli przez starą gwardię, ale jego wybór tylko jednym głosem uwidocznił słabość systemu.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Sierpień 1989</p>
+                                        <p class="horizontal-timeline-description">Mazowiecki Premierem</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Był to pierwszy niekomunistyczny premier w Bloku Wschodnim, co wysłało silny sygnał o nieodwracalności zmian i inspirowało inne kraje.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Grudzień 1989</p>
+                                        <p class="horizontal-timeline-description">Zmiana Konstytucji</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Formalnie zakończyła epokę PRL i przywróciła demokratyczne symbole narodowe, co było kluczowe dla budowania nowej tożsamości państwowej.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Styczeń 1990</p>
+                                        <p class="horizontal-timeline-description">Plan Balcerowicza</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Szybka i radykalna transformacja gospodarki rynkowej, która choć bolesna, zapobiegła całkowitej zapaści i otworzyła Polskę na Zachód. Skutki społeczne tego planu są odczuwalne do dziś.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Styczeń 1990</p>
+                                        <p class="horizontal-timeline-description">Rozwiązanie PZPR</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Ostateczny upadek partii komunistycznej otworzył drogę do prawdziwego pluralizmu politycznego i swobodnego rozwoju społeczeństwa obywatelskiego.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Wiosna 1990</p>
+                                        <p class="horizontal-timeline-description">Wybory samorządowe</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Były to pierwsze w pełni wolne wybory na szczeblu lokalnym, co umożliwiło budowę demokracji od podstaw i dało obywatelom realny wpływ na lokalną politykę.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Grudzień 1990</p>
+                                        <p class="horizontal-timeline-description">Wałęsa Prezydentem</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Był to kolejny krok w konsolidacji demokracji, choć jego prezydentura pokazała również pierwsze rysy w obozie post-solidarnościowym.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">Październik 1991</p>
+                                        <p class="horizontal-timeline-description">Wolne wybory parlamentarne</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Po raz pierwszy od II wojny światowej Polacy mogli w pełni demokratycznie wybrać swój parlament, co było milowym krokiem w budowie systemu wielopartyjnego.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">1992</p>
+                                        <p class="horizontal-timeline-description">Wzrost gospodarczy</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Potwierdziło skuteczność trudnych reform Balcerowicza i pokazało, że Polska wychodzi na prostą ekonomicznie, stając się przykładem dla innych krajów regionu.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">1993</p>
+                                        <p class="horizontal-timeline-description">Ustawa o aborcji</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Demonstrowała rosnący wpływ Kościoła Katolickiego na prawodawstwo w nowej Polsce, co wywołało i wciąż wywołuje szerokie społeczne dyskusje i podziały.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">1993/1998</p>
+                                        <p class="horizontal-timeline-description">Konkordat</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Uregulował relacje między państwem a Kościołem, umacniając pozycję Kościoła i dając mu znaczne przywileje, co było kontynuacją jego ważnej roli w społeczeństwie.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">1995</p>
+                                        <p class="horizontal-timeline-description">Wałęsa przegrywa reelekcję</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Pokazało to dojrzałość polskiej demokracji i zdolność do pokojowej zmiany władzy, nawet z ikoną "Solidarności". Przyspieszyło też proces postkomunistyczny.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">1997</p>
+                                        <p class="horizontal-timeline-description">Nowa Konstytucja RP</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Ustaliła ramy prawne dla demokratycznego państwa, odcinając się od przeszłości komunistycznej i tworząc solidne fundamenty dla przyszłego rozwoju.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">1999</p>
+                                        <p class="horizontal-timeline-description">Przystąpienie Polski do NATO</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Był to kluczowy krok w integracji Polski z Zachodem i gwarancja bezpieczeństwa w obliczu zmiennej sytuacji międzynarodowej, definitywnie odcinający Polskę od radzieckiej strefy wpływów.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="horizontal-timeline-item">
+                                <div class="horizontal-timeline-card-inner">
+                                    <div class="horizontal-timeline-front">
+                                        <p class="horizontal-timeline-date">2004</p>
+                                        <p class="horizontal-timeline-description">Przystąpienie Polski do Unii Europejskiej</p>
+                                    </div>
+                                    <div class="horizontal-timeline-back">
+                                        <p class="horizontal-timeline-significance">Punkt kulminacyjny transformacji. Członkostwo w UE zapewniło Polsce dostęp do rynków, funduszy i umocniło jej pozycję na arenie międzynarodowej, przynosząc długoterminowe korzyści gospodarcze i społeczne, ale także nowe wyzwania związane z integracją.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Nowa Oś Czasu Wniosków -->
+            <section id="conclusions-timeline-section" class="section-box section-header p-6">
+                <h2 class="text-2xl font-bold mb-6 text-purple-300"><i class="fas fa-lightbulb mr-2"></i> Kluczowe Przełomy i Ich Skutki</h2>
+                <details class="mb-4 details-content">
+                    <summary class="font-semibold text-gray-100 cursor-pointer flex items-center">
+                        <i class="fas fa-plus-circle mr-2 text-blue-400"></i> Zobacz kluczowe przełomy
+                    </summary>
+                    <div class="details-content">
+                        <div class="conclusions-timeline-container">
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1979</p>
+                                <p class="text-gray-200"><strong>Pielgrzymka Jana Pawła II do Polski</strong></p>
+                                <p class="conclusions-timeline-conclusion">Wzbudziła nadzieję i jedność narodową, pokazując siłę społeczeństwa poza kontrolą komunistyczną. Był to kluczowy czynnik moralnego i duchowego przygotowania gruntu pod późniejsze zmiany.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1980, Sierpień</p>
+                                <p class="text-gray-200"><strong>Powstanie "Solidarności"</strong></p>
+                                <p class="conclusions-timeline-conclusion">To był początek końca komunizmu w Polsce. "Solidarność" stała się największym ruchem społecznym w Bloku Wschodnim, podważając legitymację reżimu i dając nadzieję na wolność.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1981, Grudzień</p>
+                                <p class="text-gray-200"><strong>Wprowadzenie Stanu Wojennego</strong></p>
+                                <p class="conclusions-timeline-conclusion">Mimo stłumienia "Solidarności", stan wojenny paradoksalnie osłabił PZPR w oczach społeczeństwa i międzynarodowej opinii publicznej, zmuszając reżim do szukania wyjścia z kryzysu w przyszłości.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1985</p>
+                                <p class="text-gray-200"><strong>M. Gorbaczow przejmuje władzę w ZSRR</strong></p>
+                                <p class="conclusions-timeline-conclusion">Jego polityka "Głasnosti" (otwartości) i "Pierestrojki" (przebudowy) oraz rezygnacja z "doktryny Breżniewa" otworzyły drogę do suwerennych decyzji w krajach satelickich, w tym w Polsce, minimalizując ryzyko interwencji radzieckiej.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1988</p>
+                                <p class="text-gray-200"><strong>Fala strajków w Polsce</strong></p>
+                                <p class="conclusions-timeline-conclusion">Masowe strajki ujawniły głęboki kryzys gospodarczy i społeczne niezadowolenie, zmuszając władze komunistyczne do rozpoczęcia dialogu z opozycją, co doprowadziło do Okrągłego Stołu.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1989, Luty-Kwiecień</p>
+                                <p class="text-gray-200"><strong>Obrady Okrągłego Stołu</strong></p>
+                                <p class="conclusions-timeline-conclusion">Uznanie opozycji przez władze było bezprecedensowe. Ten dialog stworzył platformę do pokojowej zmiany, która była niemożliwa do cofnięcia, mimo prób kontrolowania procesu przez komunistów.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1989, Czerwiec</p>
+                                <p class="text-gray-200"><strong>Częściowo wolne Wybory Parlamentarne</strong></p>
+                                <p class="conclusions-timeline-conclusion">Zwycięstwo "Solidarności" w wyborach do Senatu było totalnym szokiem dla władz i otworzyło drzwi do prawdziwej demokracji. Pokazało to, że społeczeństwo jest gotowe na pełną zmianę.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1989, Sierpień</p>
+                                <p class="text-gray-200"><strong>Powstanie rządu Tadeusza Mazowieckiego</strong></p>
+                                <p class="conclusions-timeline-conclusion">Pierwszy niekomunistyczny premier w Bloku Wschodnim! To był symboliczny, ale i realny znak zerwania z dominacją komunistyczną, dając impuls do podobnych zmian w całym regionie.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1989, Grudzień</p>
+                                <p class="text-gray-200"><strong>Zmiana Konstytucji i nazwy państwa na RP</strong></p>
+                                <p class="conclusions-timeline-conclusion">Formalne odcięcie się od komunistycznej przeszłości i symboliczne przywrócenie ciągłości z przedwojenną Polską. Ten akt miał ogromne znaczenie dla tożsamości narodowej.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1990, Styczeń</p>
+                                <p class="text-gray-200"><strong>Wprowadzenie Planu Balcerowicza</strong></p>
+                                <p class="conclusions-timeline-conclusion">Radykalna "terapia szokowa" szybko zliberalizowała gospodarkę, eliminując niedobory. Jednak kosztem były wysokie bezrobocie i nierówności, które ukształtowały polską politykę społeczną i podziały na dekady.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1990, Styczeń</p>
+                                <p class="text-gray-200"><strong>Rozwiązanie PZPR</strong></p>
+                                <p class="conclusions-timeline-conclusion">Definitywny koniec rządzącej partii komunistycznej otworzył drogę do prawdziwego pluralizmu politycznego i swobody tworzenia nowych partii.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1990, Grudzień</p>
+                                <p class="text-gray-200"><strong>Lech Wałęsa wybrany Prezydentem RP</strong></p>
+                                <p class="conclusions-timeline-conclusion">Bezpośrednie wybory prezydenckie umocniły demokrację, choć prezydentura Wałęsy ujawniła nowe wyzwania związane z zarządzaniem państwem w okresie zmian i podziałami w obozie post-solidarnościowym.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1992</p>
+                                <p class="text-gray-200"><strong>Początek wzrostu gospodarczego</strong></p>
+                                <p class="conclusions-timeline-conclusion">Mimo początkowych trudności, szybki wzrost gospodarczy Polski po 1992 roku dowiódł skuteczności reform rynkowych, czyniąc Polskę liderem transformacji w regionie.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1993</p>
+                                <p class="text-gray-200"><strong>Ustawa o aborcji</strong></p>
+                                <p class="conclusions-timeline-conclusion">Znaczący wpływ Kościoła Katolickiego na prawodawstwo społeczne. To wydarzenie pokazało, jak nowa rola Kościoła w wolnej Polsce stawała się źródłem nowych podziałów ideologicznych w społeczeństwie.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1997</p>
+                                <p class="text-gray-200"><strong>Uchwalenie nowej Konstytucji RP</strong></p>
+                                <p class="conclusions-timeline-conclusion">Konstytucja z 1997 roku ustanowiła trwałe i demokratyczne ramy prawne dla państwa, oficjalnie odcinając się od przeszłości PRL. Była to kulminacja procesu budowania nowego ładu prawnego.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">1999</p>
+                                <p class="text-gray-200"><strong>Przystąpienie Polski do NATO</strong></p>
+                                <p class="conclusions-timeline-conclusion">Strategiczny krok w stronę bezpieczeństwa i integracji z Zachodem, definitywnie odcinający Polskę od radzieckiej strefy wpływów i umacniający jej suwerenność. Było to potwierdzenie nowej, prozachodniej orientacji.</p>
+                            </div>
+                            <div class="conclusions-timeline-item">
+                                <p class="conclusions-timeline-date">2004</p>
+                                <p class="text-gray-200"><strong>Przystąpienie Polski do Unii Europejskiej</strong></p>
+                                <p class="conclusions-timeline-conclusion">Punkt kulminacyjny transformacji. Członkostwo w UE zapewniło Polsce dostęp do rynków, funduszy i umocniło jej pozycję na arenie międzynarodowej, przynosząc długoterminowe korzyści gospodarcze i społeczne, ale także nowe wyzwania związane z integracją.</p>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Sekcja quizu -->
+            <section id="quiz-section" class="section-box section-header p-6">
+                <h2 class="text-2xl font-bold mb-4 text-green-300"><i class="fas fa-question-circle mr-2"></i> Sprawdź swoją wiedzę! (Quiz)</h2>
+                <div id="quiz-container"></div>
+                <button id="submit-quiz-btn" class="mt-6 px-8 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 transform hover:scale-105">
+                    Sprawdź odpowiedzi <i class="fas fa-check ml-2"></i>
+                </button>
+                <div id="quiz-results" class="mt-4 text-xl font-bold text-white text-center"></div>
+            </section>
+        </main>
+
+        <button id="scroll-to-top-btn" aria-label="Wróć do góry">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // Funkcjonalność przycisku przewijania do góry
+        const scrollToTopBtn = document.getElementById("scroll-to-top-btn");
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        };
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Logika rozwijania sekcji
+        document.querySelectorAll('details').forEach(detail => {
+            detail.addEventListener('toggle', () => {
+                const icon = detail.querySelector('summary .fas');
+                if (icon) {
+                    if (detail.open) {
+                        if (icon.classList.contains('fa-plus-circle')) {
+                            icon.classList.remove('fa-plus-circle');
+                            icon.classList.add('fa-minus-circle');
+                        }
+                    } else {
+                        if (icon.classList.contains('fa-minus-circle')) {
+                            icon.classList.remove('fa-minus-circle');
+                            icon.classList.add('fa-plus-circle');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Dane quizu
+        const allQuizQuestions = [
+            {
+                question: "Które wydarzenie zapoczątkowało negocjowany charakter transformacji Polski?",
+                options: [
+                    "Wybory w czerwcu 1989",
+                    "Obrady Okrągłego Stołu",
+                    "Wizyta Papieża Jana Pawła II w 1979",
+                    "Wprowadzenie stanu wojennego"
+                ],
+                answer: "Obrady Okrągłego Stołu",
+                explanation: "Transformacja Polski wyróżniała się negocjowanym charakterem, zapoczątkowanym przez Obrady Okrągłego Stołu."
+            },
+            {
+                question: "Jaki procent miejsc w Sejmie był wstępnie zagwarantowany dla PZPR i jej partii satelickich w wyborach czerwcowych 1989?",
+                options: [
+                    "100%",
+                    "50%",
+                    "65%",
+                    "35%"
+                ],
+                answer: "65%",
+                explanation: "Podstawowym założeniem Okrągłego Stołu było utrzymanie przez PZPR kontroli nad procesem politycznym, co miało być zapewnione przez ordynację wyborczą gwarantującą PZPR i jej partiom satelickim 65% większości w Sejmie."
+            },
+            {
+                question: "Kto został pierwszym niekomunistycznym premierem w całym Bloku Wschodnim?",
+                options: [
+                    "Lech Wałęsa",
+                    "Wojciech Jaruzelski",
+                    "Tadeusz Mazowiecki",
+                    "Leszek Balcerowicz"
+                ],
+                answer: "Tadeusz Mazowiecki",
+                explanation: "W sierpniu 1989 roku Tadeusz Mazowiecki został pierwszym niekomunistycznym premierem w całym Bloku Wschodnim."
+            },
+            {
+                question: "Jakie były początkowe efekty Planu Balcerowicza na PKB Polski w 1990 roku?",
+                options: [
+                    "Wzrost o 8%",
+                    "Spadek o 8%",
+                    "Brak zmian",
+                    "Wzrost o 24%"
+                ],
+                answer: "Spadek o 8%",
+                explanation: "Początkowe efekty Planu Balcerowicza to 3-letni spadek produkcji, a PKB Polski spadł o 8% w 1990 roku."
+            },
+            {
+                question: "Która instytucja pełniła rolę zaufanego mediatora w dialogu między władzami a opozycją przed Okrągłym Stołem?",
+                options: [
+                    "Wojsko Polskie",
+                    "Związek Radziecki",
+                    "Kościół katolicki",
+                    "Ministerstwo Spraw Wewnętrznych"
+                ],
+                answer: "Kościół katolicki",
+                explanation: "Kościół katolicki odegrał istotną rolę jako zaufana strona trzecia, ułatwiając dialog i zwiększając zaufanie między obiema stronami."
+            },
+            {
+                question: "W którym roku zmieniono nazwę państwa z Polskiej Rzeczypospolitej Ludowej na Rzeczpospolitą Polską?",
+                options: [
+                    "1988",
+                    "1989",
+                    "1990",
+                    "1991"
+                ],
+                answer: "1989",
+                explanation: "W grudniu 1989 roku Sejm zmienił konstytucję, zmieniając nazwę państwa z Polskiej Rzeczypospolitej Ludowej na Rzeczpospolitą Polską."
+            },
+            {
+                question: "Które z poniższych było kluczowym mechanizmem 'terapii szokowej' Balcerowicza?",
+                options: [
+                    "Centralne planowanie cen",
+                    "Ścisła kontrola inflacji przez sztuczne zamrażanie cen",
+                    "Dyscyplina fiskalna i cięcie dotacji",
+                    "Państwowy monopol na handel zagraniczny"
+                ],
+                answer: "Dyscyplina fiskalna i cięcie dotacji",
+                explanation: "Kluczowe elementy 'terapii szokowej' Balcerowicza to liberalizacja cen, kontrola płac, dyscyplina fiskalna, wymienialność waluty, podniesienie stóp procentowych i prywatyzacja. Centralne planowanie i monopol na handel zagraniczny były cechami starego systemu."
+            },
+            {
+                question: "Jakie zjawisko społeczne pojawiło się w Polsce jako negatywna konsekwencja reform gospodarczych Balcerowicza?",
+                options: [
+                    "Masowy powrót emigrantów z Zachodu",
+                    "Znaczące zmniejszenie bezrobocia",
+                    "Nowa bieda i rosnące nierówności",
+                    "Równy podział bogactwa narodowego"
+                ],
+                answer: "Nowa bieda i rosnące nierówności",
+                explanation: "Reformy doprowadziły do znaczącej stratyfikacji społecznej i rosnących nierówności ekonomicznych, dając początek 'nowej biedzie'."
+            },
+            {
+                question: "Jaki był początkowy cel wprowadzenia urzędu prezydenta przy Okrągłym Stole z perspektywy PZPR?",
+                options: [
+                    "Wzmocnienie demokracji parlamentarnej",
+                    "Zapewnienie kontroli PZPR nad procesem politycznym",
+                    "Umożliwienie Lechowi Wałęsie objęcia władzy",
+                    "Wprowadzenie systemu prezydenckiego wzorowanego na USA"
+                ],
+                answer: "Zapewnienie kontroli PZPR nad procesem politycznym",
+                explanation: "Utworzono również silny urząd prezydenta, który miał objąć I Sekretarz Generalny PZPR Wojciech Jaruzelski, co miało zapewnić PZPR kontrolę nad procesem politycznym."
+            },
+            {
+                question: "Które zdanie najlepiej opisuje dziedzictwo Lecha Wałęsy w Polsce?",
+                options: [
+                    "Jest powszechnie uznawany za niekwestionowanego bohatera narodowego, bez żadnych kontrowersji.",
+                    "Jego wpływ jest nieznaczny i zapomniany w dzisiejszej Polsce.",
+                    "Jego dziedzictwo pozostaje mocno sporne, odzwierciedlając toczące się 'wojny o historię'.",
+                    "Jego prezydentura była wzorem stabilności i kompromisu, bez żadnych konfliktów."
+                ],
+                answer: "Jego dziedzictwo pozostaje mocno sporne, odzwierciedlając toczące się 'wojny o historię'.",
+                explanation: "Mimo prezydenckich trudności, dziedzictwo Wałęsy pozostaje w Polsce mocno sporne, odzwierciedlając toczące się 'wojny o historię' i wewnętrzne podziały."
+            },
+            {
+                question: "Co było głównym powodem, dla którego władze komunistyczne zdecydowały się na rozmowy z opozycją w 1989 roku?",
+                options: [
+                    "Chęć wprowadzenia pełnej demokracji",
+                    "Głęboki kryzys gospodarczy i naciski społeczne",
+                    "Nakaz ze strony Związku Radzieckiego",
+                    "Sukces wcześniejszych reform rynkowych"
+                ],
+                answer: "Głęboki kryzys gospodarczy i naciski społeczne",
+                explanation: "Kryzys gospodarczy w drugiej połowie lat 80. i fala strajków w 1988 roku zmusiły władze do strategii współodpowiedzialności i porozumienia z opozycją, aby uniknąć dalszych niepokojów społecznych."
+            },
+            {
+                question: "Jakie było nieprzewidziane, główne konsekwencje całkowicie wolnych wyborów do Senatu po Okrągłym Stole?",
+                options: [
+                    "Wzmocnienie pozycji PZPR",
+                    "Szybki rozpad reżimu komunistycznego",
+                    "Zwiększenie roli wojska w polityce",
+                    "Stabilizacja gospodarki od razu po wyborach"
+                ],
+                answer: "Szybki rozpad reżimu komunistycznego",
+                explanation: "Zezwolenie na całkowicie wolne wybory do Senatu okazało się krytyczną słabością, ponieważ przytłaczające zwycięstwo opozycji w wolnych wyborach pokazało brak legitymacji reżimu, przyspieszając jego upadek."
+            },
+            {
+                question: "Która gazeta, uruchomiona przez 'Solidarność', odegrała kluczową rolę w kampanii wyborczej w czerwcu 1989 roku?",
+                options: [
+                    "Trybuna Ludu",
+                    "Rzeczpospolita",
+                    "Gazeta Wyborcza",
+                    "Życie Warszawy"
+                ],
+                answer: "Gazeta Wyborcza",
+                explanation: "Kluczowym elementem kampanii 'Solidarności' było uruchomienie 'Gazety Wyborczej', która stała się wpływowym ogólnopolskim dziennikiem."
+            },
+            {
+                question: "Jakie zjawisko społeczno-kulturowe doprowadziło do 'ukrytego konfliktu międzypokoleniowego' w Polsce po transformacji?",
+                options: [
+                    "Wspólne poglądy na demokrację i państwo",
+                    "Jednolita interpretacja PRL i jej dziedzictwa",
+                    "Różne poglądy na demokrację i wsparcie państwa między pokoleniami",
+                    "Brak zainteresowania historią wśród młodszych pokoleń"
+                ],
+                answer: "Różne poglądy na demokrację i wsparcie państwa między pokoleniami",
+                explanation: "Młodsze pokolenia, wychowane w systemie kapitalistycznym, często mają inne poglądy na demokrację i wsparcie państwa w porównaniu do starszych pokoleń, co przyczyniło się do 'ukrytego konfliktu międzypokoleniowego'."
+            },
+            {
+                question: "Który termin opisuje fakt, że Polska po 1989 roku proklamowała zerwanie z komunistyczną przeszłością, ale w dużej mierze utrzymała ciągłość systemu prawnego i instytucjonalnego?",
+                options: [
+                    "Monistyczne państwo prawa",
+                    "Socjalistyczna tradycja prawna",
+                    "Podwójne państwo prawa",
+                    "Pełna dekomunizacja"
+                ],
+                answer: "Podwójne państwo prawa",
+                explanation: "Transformacja przyjęła 'podwójne państwo prawa', proklamując zerwanie z komunistyczną przeszłością, jednocześnie w dużej mierze utrzymując ciągłość systemu prawnego i instytucjonalnego."
+            },
+            {
+                question: "Jaki był jeden z głównych celów Planu Balcerowicza w kontekście gospodarki?",
+                options: [
+                    "Wzrost znaczenia sektora państwowego",
+                    "Osiągnięcie równowagi budżetowej i redukcja inflacji",
+                    "Wprowadzenie pełnej kontroli cen przez państwo",
+                    "Zwiększenie barier handlowych z Zachodem"
+                ],
+                answer: "Osiągnięcie równowagi budżetowej i redukcja inflacji",
+                explanation: "Plan Balcerowicza miał na celu szybkie osiągnięcie równowagi budżetowej, redukcję inflacji i stabilizację waluty."
+            },
+            {
+                question: "Jakie było znaczenie Pokojowej Nagrody Nobla dla Lecha Wałęsy w 1983 roku?",
+                options: [
+                    "Oznaczało koniec jego kariery politycznej",
+                    "Wzmocniło jego międzynarodową reputację i dało nadzieję Polakom",
+                    "Było przyczyną rozpadu 'Solidarności'",
+                    "Został on po niej internowany"
+                ],
+                answer: "Wzmocniło jego międzynarodową reputację i dało nadzieję Polakom",
+                explanation: "Otrzymanie Pokojowej Nagrody Nobla w 1983 roku wzmocniło międzynarodową reputację Wałęsy i stało się symbolem nadziei dla narodu polskiego."
+            },
+            {
+                question: "Co działo się z płacami realnymi w Polsce w ciągu pierwszych dwóch miesięcy po wprowadzeniu Planu Balcerowicza?",
+                options: [
+                    "Wzrosły o ponad 40%",
+                    "Pozostały bez zmian",
+                    "Spadły o ponad 40%",
+                    "Wzrosły nieznacznie"
+                ],
+                answer: "Spadły o ponad 40%",
+                explanation: "W ciągu pierwszych dwóch miesięcy wdrażania Planu Balcerowicza płace realne spadły o ponad 40%."
+            },
+            {
+                question: "Jak Kościół katolicki wspierał opozycję przed 1989 rokiem?",
+                options: [
+                    "Aktywnie uczestniczył w demonstracjach ulicznych",
+                    "Publicznie ogłaszał spotkania 'Solidarności' i udostępniał pomieszczenia",
+                    "Finansował podziemne drukarnie bez wiedzy władz",
+                    "Organizmował zbrojny opór przeciwko władzy"
+                ],
+                answer: "Publicznie ogłaszał spotkania 'Solidarności' i udostępniał pomieszczenia",
+                explanation: "Kościół udzielał bezpośredniego wsparcia opozycji poprzez ogłaszanie terminów spotkań 'Solidarności' z ambon i udostępnianie pomieszczeń kościelnych na spotkania i dystrybucję materiałów."
+            },
+            {
+                question: "Kiedy nastąpił początek systematycznego wzrostu gospodarczego w Polsce po wdrożeniu Planu Balcerowicza?",
+                options: [
+                    "Od 1989 roku",
+                    "Od 1990 roku",
+                    "Od 1992 roku",
+                    "Dopiero po 2000 roku"
+                ],
+                answer: "Od 1992 roku",
+                explanation: "Od 1992 roku gospodarka Polski weszła w fazę systematycznego wzrostu, stając się liderem transformacji postkomunistycznych."
+            },
+            {
+                question: "Jakie było znaczenie Konkordatu podpisanego w 1993 roku (ratyfikowanego w 1998) dla Kościoła katolickiego w Polsce?",
+                options: [
+                    "Ograniczył wpływy Kościoła na politykę",
+                    "Znacząco umocnił jego uprzywilejowaną pozycję",
+                    "Doprowadził do pełnego rozdziału Kościoła od państwa",
+                    "Spowodował zmniejszenie dotacji państwowych dla Kościoła"
+                ],
+                answer: "Znacząco umocnił jego uprzywilejowaną pozycję",
+                explanation: "Konkordat (podpisany w 1993, ratyfikowany w 1998) umocnił uprzywilejowaną pozycję Kościoła katolickiego w Polsce, określając jego relacje z państwem, w tym w kwestii dotacji i nauczania religii."
+            },
+            {
+                question: "Który z poniższych punktów charakteryzował prezydenturę Lecha Wałęsy (1990-1995)?",
+                options: [
+                    "Harmonijna współpraca z parlamentem",
+                    "Kontynuowanie strategii konfrontacji i 'wojna na górze'",
+                    "Zwiększenie stabilności instytucji demokratycznych",
+                    "Odcięcie się od wpływów Kościoła katolickiego"
+                ],
+                answer: "Kontynuowanie strategii konfrontacji i 'wojna na górze'",
+                explanation: "Prezydentura Wałęsy charakteryzowała się kontynuacją strategii konfrontacji i zainicjowaniem 'wojny na górze', co doprowadziło do podziałów."
+            },
+            {
+                question: "Czym charakteryzowała się kampania PZPR w wyborach czerwcowych 1989?",
+                options: [
+                    "Była innowacyjna i skuteczna",
+                    "Oparta na micie 'drużyny Jaruzelskiego'",
+                    "Była 'źle przeprowadzona' i 'anemiczna'",
+                    "Wykorzystywała szeroki dostęp do mediów prywatnych"
+                ],
+                answer: "Była 'źle przeprowadzona' i 'anemiczna'",
+                explanation: "Kampania PZPR w wyborach czerwcowych 1989 była 'źle przeprowadzona' i 'anemiczna', co przyczyniło się do jej porażki."
+            },
+            {
+                question: "Co oznacza pojęcie 'dekomunizacja przestrzeni publicznej' po 1989 roku?",
+                options: [
+                    "Budowę nowych osiedli mieszkaniowych",
+                    "Zmianę nazw ulic i usuwanie pomników związanych z komunizmem",
+                    "Masową prywatyzację przedsiębiorstw państwowych",
+                    "Wprowadzenie wolnych wyborów do parlamentu"
+                ],
+                answer: "Zmianę nazw ulic i usuwanie pomników związanych z komunizmem",
+                explanation: "'Dekomunizacja przestrzeni publicznej' to proces usuwania symboli komunizmu, takich jak pomniki i nazwy ulic, w celu odcięcia się od poprzedniego systemu."
+            },
+            {
+                question: "Jaki był jeden z nieprzewidzianych efektów obrad Okrągłego Stołu z punktu widzenia reżimu komunistycznego?",
+                options: [
+                    "Wzmocnienie ich pozycji politycznej",
+                    "Szybkie i niekontrolowane przyspieszenie rozpadu reżimu",
+                    "Zachowanie pełni władzy nad społeczeństwem",
+                    "Stabilizacja gospodarki od razu po podpisaniu porozumień"
+                ],
+                answer: "Szybkie i niekontrolowane przyspieszenie rozpadu reżimu",
+                explanation: "Mimo że reżim komunistyczny dążył do kontrolowania procesu, udział opozycji w obradach Okrągłego Stołu nieświadomie zapoczątkował szybki i niekontrolowany rozpad reżimu."
+            },
+            {
+                question: "Czym skutkowała polityzacja Kościoła katolickiego po 1989 roku?",
+                options: [
+                    "Powszechnym wzrostem zaufania do Kościoła",
+                    "Spadkiem zaufania i spolaryzowanymi debatami społecznymi",
+                    "Wycofaniem się Kościoła z życia publicznego",
+                    "Zwiększeniem jedności narodowej wokół wartości religijnych"
+                ],
+                answer: "Spadkiem zaufania i spolaryzowanymi debatami społecznymi",
+                explanation: "Aktywna polityzacja Kościoła po 1989 roku nie zawsze spotykała się z pozytywnym poparciem społecznym, co skutkowało spadkiem zaufania i spolaryzowanymi debatami."
+            },
+            {
+                question: "W jakim roku Polska Zjednoczona Partia Robotnicza (PZPR) uległa rozwiązaniu?",
+                options: [
+                    "1989",
+                    "1990",
+                    "1991",
+                    "1992"
+                ],
+                answer: "1990",
+                explanation: "Polska Zjednoczona Partia Robotnicza (PZPR) uległa rozwiązaniu w styczniu 1990 roku."
+            },
+            {
+                question: "Który z poniższych aktów prawnych umocnił uprzywilejowaną pozycję Kościoła katolickiego w Polsce po 1989 roku?",
+                options: [
+                    "Deklaracja Praw Człowieka",
+                    "Konstytucja PRL",
+                    "Konkordat",
+                    "Ustawa o stowarzyszeniach"
+                ],
+                answer: "Konkordat",
+                explanation: "Konkordat (podpisany w 1993, ratyfikowany w 1998) umocnił uprzywilejowaną pozycję Kościoła katolickiego w Polsce, określając jego relacje z państwem."
+            },
+            {
+                question: "Czym było 'podwójne państwo prawa' w kontekście transformacji Polski?",
+                options: [
+                    "Systemem dwóch równoległych konstytucji",
+                    "Proklamowaniem zerwania z komunizmem przy utrzymaniu ciągłości prawnej i instytucjonalnej",
+                    "Wprowadzeniem podwójnego obywatelstwa",
+                    "Systemem dwóch niezależnych sądów"
+                ],
+                answer: "Proklamowaniem zerwania z komunizmem przy utrzymaniu ciągłości prawnej i instytucjonalnej",
+                explanation: "Transformacja przyjęła 'podwójne państwo prawa', proklamując zerwanie z komunistyczną przeszłością, jednocześnie w dużej mierze utrzymując ciągłość systemu prawnego i instytucjonalnego."
+            },
+            {
+                question: "Która z wymienionych postaci nie była kluczowym uczestnikiem obrad Okrągłego Stołu po stronie opozycji?",
+                options: [
+                    "Lech Wałęsa",
+                    "Bronisław Geremek",
+                    "Mieczysław Rakowski",
+                    "Adam Michnik"
+                ],
+                answer: "Mieczysław Rakowski",
+                explanation: "Mieczysław Rakowski był kluczową postacią po stronie rządowej, nie opozycyjnej."
+            },
+            {
+                question: "Jaka była rola Kościoła katolickiego przed 1989 rokiem w Polsce?",
+                options: [
+                    "Był narzędziem propagandy komunistycznej",
+                    "Był neutralną instytucją, niezwiązaną z polityką",
+                    "Był 'ostatnią legalną siłą sprzeciwiającą się' reżimowi komunistycznemu",
+                    "Wspierał radzieckie wpływy w Polsce"
+                ],
+                answer: "Był 'ostatnią legalną siłą sprzeciwiającą się' reżimowi komunistycznemu",
+                explanation: "Przed 1989 rokiem Kościół katolicki był 'ostatnią legalną siłą sprzeciwiającą się' reżimowi komunistycznemu i obrońcą tożsamości narodowej."
+            },
+            {
+                question: "W którym roku odbyły się pierwsze w pełni wolne wybory samorządowe w Polsce?",
+                options: [
+                    "1989",
+                    "1990",
+                    "1991",
+                    "1995"
+                ],
+                answer: "1990",
+                explanation: "Wolne wybory samorządowe odbyły się wiosną 1990 roku i były pierwszymi w pełni wolnymi wyborami na szczeblu lokalnym."
+            },
+            {
+                question: "Jaka była główna charakterystyka gospodarki Polski przed 1989 rokiem?",
+                options: [
+                    "Gospodarka rynkowa",
+                    "Gospodarka centralnie planowana",
+                    "Gospodarka mieszana",
+                    "Gospodarka oparta na handlu zagranicznym"
+                ],
+                answer: "Gospodarka centralnie planowana",
+                explanation: "Przed 1989 rokiem Polska funkcjonowała w ramach systemu komunistycznego z gospodarką centralnie planowaną."
+            },
+            {
+                question: "Kto był liderem Związku Radzieckiego, którego reformy wpłynęły na zmiany w Polsce?",
+                options: [
+                    "Józef Stalin",
+                    "Nikita Chruszczow",
+                    "Michaił Gorbaczow",
+                    "Leonid Breżniew"
+                ],
+                answer: "Michaił Gorbaczow",
+                explanation: "Polityka 'Głasnosti' i 'Pierestrojki' Michaiła Gorbaczowa oraz rezygnacja z 'doktryny Breżniewa' miały kluczowy wpływ na otwarcie drogi do suwerennych decyzji w krajach bloku wschodniego, w tym w Polsce."
+            },
+            {
+                question: "Jak nazywała się doktryna radziecka, która zakładała interwencję militarną w krajach komunistycznych w celu utrzymania systemu?",
+                options: [
+                    "Doktryna Trumana",
+                    "Doktryna Eisenhowera",
+                    "Doktryna Breżniewa",
+                    "Doktryna Reagana"
+                ],
+                answer: "Doktryna Breżniewa",
+                explanation: "Doktryna Breżniewa zezwalała na interwencję ZSRR w krajach satelickich, co zakończyło się wraz z polityką Gorbaczowa, otwierając drogę do transformacji w Polsce."
+            },
+            {
+                question: "Które z wymienionych symboli narodowych powróciło jako godło Polski w grudniu 1989 roku?",
+                options: [
+                    "Czerwona gwiazda",
+                    "Koronowany biały orzeł",
+                    "Skrzyżowane młoty",
+                    "Sierp i młot"
+                ],
+                answer: "Koronowany biały orzeł",
+                explanation: "W grudniu 1989 roku, wraz ze zmianą nazwy państwa na Rzeczpospolitą Polską, powrócił koronowany biały orzeł jako godło narodowe."
+            },
+            {
+                question: "W którym roku odbyły się pierwsze w pełni wolne wybory parlamentarne w Polsce po II wojnie światowej?",
+                options: [
+                    "1989",
+                    "1990",
+                    "1991",
+                    "1993"
+                ],
+                answer: "1991",
+                explanation: "Pierwsze w pełni wolne wybory parlamentarne, w których Polacy mogli wybrać cały skład parlamentu, odbyły się w październiku 1991 roku."
+            }
+        ];
+
+        let shuffledQuizQuestions = []; // Przechowuje losowo wybrane pytania
+        let userAnswers = {}; // Przechowuje wybrane odpowiedzi użytkownika
+
+        // Algorytm tasowania Fisher-Yates
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Zamień elementy
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = ''; // Wyczyść poprzedni quiz
+
+            // Wybierz podzbiór pytań do wyświetlenia, np. 30 pytań naraz
+            const numberOfQuestionsToDisplay = 30;
+            shuffledQuizQuestions = shuffleArray([...allQuizQuestions]).slice(0, numberOfQuestionsToDisplay); // Tasuj i weź pierwsze N pytań
+
+            userAnswers = {}; // Zresetuj odpowiedzi użytkownika dla nowego quizu
+
+            shuffledQuizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('mb-6', 'p-4', 'bg-gray-800', 'rounded-lg', 'shadow-sm');
+                questionDiv.innerHTML = `<p class="font-semibold text-lg mb-3 text-gray-100">Pytanie ${index + 1}: ${q.question}</p>`;
+
+                const shuffledOptions = shuffleArray([...q.options]); // Tasuj opcje dla każdego pytania
+
+                shuffledOptions.forEach((option) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.classList.add('quiz-option', 'p-3', 'mb-2', 'border', 'border-transparent', 'rounded-md', 'transition-colors', 'duration-200', 'text-gray-200', 'hover:shadow-md');
+                    optionDiv.textContent = option;
+                    optionDiv.dataset.questionIndex = index; // Użyj indeksu z shuffledQuestions
+                    optionDiv.dataset.option = option;
+
+                    optionDiv.addEventListener('click', () => {
+                        const currentQuestionOptions = document.querySelectorAll(`[data-question-index="${index}"]`);
+                        currentQuestionOptions.forEach(opt => {
+                            opt.classList.remove('selected');
+                            opt.classList.remove('correct', 'incorrect'); // Wyczyść poprzednie klasy wyników
+                            const prevExplanation = opt.nextElementSibling;
+                            if (prevExplanation && prevExplanation.classList.contains('explanation')) {
+                                prevExplanation.remove();
+                            }
+                        });
+
+                        optionDiv.classList.add('selected');
+                        userAnswers[index] = option;
+                    });
+                    questionDiv.appendChild(optionDiv);
+                });
+                quizContainer.appendChild(questionDiv);
+            });
+            document.getElementById('quiz-results').innerHTML = ''; // Wyczyść wyniki quizu podczas renderowania nowego quizu
+        }
+
+        function checkQuiz() {
+            const quizResultsDiv = document.getElementById('quiz-results');
+            quizResultsDiv.innerHTML = '';
+            let correctCount = 0;
+
+            shuffledQuizQuestions.forEach((q, index) => {
+                const selectedOption = userAnswers[index];
+                const optionsDivs = document.querySelectorAll(`[data-question-index="${index}"]`);
+
+                optionsDivs.forEach(optDiv => {
+                    optDiv.classList.remove('selected', 'correct', 'incorrect'); // Wyczyść wszystkie poprzednie stany
+                    const prevExplanation = optDiv.nextElementSibling;
+                    if (prevExplanation && prevExplanation.classList.contains('explanation')) {
+                        prevExplanation.remove();
+                    }
+
+                    if (optDiv.dataset.option === q.answer) {
+                        optDiv.classList.add('correct'); // Oznacz poprawną odpowiedź na zielono
+                    } else if (optDiv.dataset.option === selectedOption && selectedOption !== q.answer) {
+                        optDiv.classList.add('incorrect'); // Oznacz błędny wybór użytkownika na czerwono
+                        if (q.explanation) {
+                            const explanationDiv = document.createElement('p');
+                            explanationDiv.classList.add('explanation', 'mt-1', 'px-3');
+                            explanationDiv.textContent = 'Wyjaśnienie: ' + q.explanation;
+                            optDiv.parentNode.insertBefore(explanationDiv, optDiv.nextSibling);
+                        }
+                    }
+                });
+
+                if (selectedOption === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            quizResultsDiv.textContent = `Twój wynik: ${correctCount} na ${shuffledQuizQuestions.length} (${(correctCount / shuffledQuizQuestions.length * 100).toFixed(0)}%)`;
+            quizResultsDiv.classList.add('p-3', 'rounded-md', 'shadow-inner', 'mt-4');
+
+            if (correctCount === shuffledQuizQuestions.length) {
+                quizResultsDiv.classList.add('bg-green-100', 'text-green-800');
+                quizResultsDiv.textContent += " Gratulacje! 🎉 Pełne przyswojenie!";
+            } else if (correctCount > shuffledQuizQuestions.length / 2) {
+                quizResultsDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+                quizResultsDiv.textContent += " Dobra robota! Spróbuj jeszcze raz!";
+            } else {
+                quizResultsDiv.classList.add('bg-red-100', 'text-red-800');
+                quizResultsDiv.textContent += " Jeszcze trochę pracy! 💪";
+            }
+
+            // Przewiń do wyników quizu po sprawdzeniu
+            quizResultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        document.getElementById('submit-quiz-btn').addEventListener('click', checkQuiz);
+
+        // Renderuj quiz po załadowaniu DOM
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+</body>
+</html>
